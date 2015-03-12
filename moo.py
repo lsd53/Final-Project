@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 import SocketServer
 import sys
+import socket
+import random
 
 class MyUDPHandler(SocketServer.BaseRequestHandler):
     """
@@ -9,23 +11,38 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
     there is no connection the client address must be given explicitly
     when sending data back via sendto().
     """
-
+    data_list=[]
     def handle(self):
         data = self.request[0].strip()
         socket = self.request[1]
         print "{} wrote:".format(self.client_address[0])
-        print data
+        self.data_list.append(data)
+        print self.data_list
         socket.sendto(data.upper(), self.client_address)
-
-if __name__ == "__main__":
-    HOST, PORT = "localhost", int(sys.argv[1])
-    server = SocketServer.UDPServer((HOST, PORT), MyUDPHandler)
-    server.serve_forever()
+        
 
 
-# SOCK_DGRAM is the socket type to use for UDP sockets
+def randguess():
+	return str(random.randint(0,9))+str(random.randint(0,9))+str(random.randint(0,9))+str(random.randint(0,9))
+
+HOST, PORT = "localhost", int(sys.argv[3])
+socket.setdefaulttimeout(1)
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-# As you can see, there is no connect() call; UDP has no connections.
-# Instead, data is directly sent to the recipient via sendto().
-sock.sendto("food"+ "\n", (HOST, PORT))
+print socket.getdefaulttimeout()
+sock.sendto("Connection Established"+ "\n", (HOST, PORT))
+try: 
+	received = sock.recv(1024)
+	server = SocketServer.UDPServer((HOST, int(sys.argv[2])), MyUDPHandler)
+		#while True:
+		#server.handle_request()
+
+except socket.timeout:
+	server = SocketServer.UDPServer((HOST, int(sys.argv[2])), MyUDPHandler)
+	while True:
+
+		server.handle_request()
+		
+    
+
+
