@@ -3,6 +3,7 @@ import SocketServer
 import sys
 import socket
 import random
+import time
 
 
 data_list=[]
@@ -57,24 +58,35 @@ try:
 		numb=randguess()
 		guess="GUESS:"+numb
 		sock.sendto(guess,(HOST,int(sys.argv[3])))
-		print "I guessed with"+numb
+		print "I guessed with "+numb
+		
+		
 		while len(data_list)<i+1:
 			server.handle_request()
-		if data_list[i-1]==WIN:
+			
+		print "Opponenent guessed: " +data_list[i][6:]
+		#time.sleep(.01)
+		if data_list[i]=="WIN":
 			print "I won!"
 			break
-		elif data_list[i-1]=="GUESS:"+sys.argv[1]:
+		elif data_list[i]=="GUESS:"+sys.argv[1]:
+			print "Opponent Won!"
 			sock.sendto("WIN",(HOST,int(sys.argv[3])))
 			break
 		else:
-			guess=data_list[i-1]
-			guess_numb=guess[5:]
-			s=giveHint(guess-numb,sys.argv[1])
-			sock.sendto(str(s[0])+"B"+str[1]+"C",(HOST,int(sys.argv[3])))
+			guess=data_list[i]
+			guess_numb=guess[6:]
+			
+			s=giveHint(guess_numb,sys.argv[1])
+			sock.sendto(str(s[0])+"B"+str(s[1])+"C",(HOST,int(sys.argv[3])))
 		i=i+1
 		while len(data_list)<i+1:
 			server.handle_request()
 		i=i+1
+
+
+
+
 
 
 
@@ -91,20 +103,27 @@ except socket.timeout:
 		numb=randguess()
 		guess="GUESS:"+numb
 		sock.sendto(guess,(HOST,int(sys.argv[3])))
-		print "I guessed with"+numb
+		print "I guessed with "+numb
+		
+		
 		while len(data_list)<i+1:
 			server.handle_request()
-		if data_list[i-1]=="WIN":
+			
+		print "Opponenent guessed: " +data_list[i][6:]
+		#time.sleep(.01)
+		if data_list[i]=="WIN":
 			print "I won!"
 			break
-		elif data_list[i-1]=="GUESS:"+sys.argv[1]:
+		elif data_list[i]=="GUESS:"+sys.argv[1]:
+			print "Opponent Won!"
 			sock.sendto("WIN",(HOST,int(sys.argv[3])))
 			break
 		else:
-			guess=data_list[i-1]
-			guess_numb=guess[5:]
+			guess=data_list[i]
+			guess_numb=guess[6:]
+			
 			s=giveHint(guess_numb,sys.argv[1])
-			sock.sendto(str(s[0])+"B"+str[1]+"C",(HOST,int(sys.argv[3])))
+			sock.sendto(str(s[0])+"B"+str(s[1])+"C",(HOST,int(sys.argv[3])))
 		i=i+1
 		while len(data_list)<i+1:
 			server.handle_request()
