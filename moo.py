@@ -54,6 +54,7 @@ try:
 	received = sock.recv(1024)
 	server = SocketServer.UDPServer((HOST, int(sys.argv[2])), MyUDPHandler)
 	i=0
+	
 	while True:
 		numb=randguess()
 		guess="GUESS:"+numb
@@ -83,6 +84,8 @@ try:
 		while len(data_list)<i+1:
 			server.handle_request()
 		i=i+1
+
+
 
 
 
